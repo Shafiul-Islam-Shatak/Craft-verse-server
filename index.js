@@ -1,6 +1,6 @@
 const express = require('express')
 const cors = require('cors')
-// const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+const { MongoClient, ServerApiVersion } = require('mongodb');
 const app = express()
 const port = process.env.PORT || 7000;
 require('dotenv').config();
@@ -22,13 +22,10 @@ const user = process.env.USER;
 console.log(user);
 
 //   mongobd
-// pass : 91WDcE3jTQfdTUXF
-// user : Craft-Verse
+const DBuser = process.env.DB_USER;
+const DBpass = process.env.DB_PASS;
 
-
-
-const { MongoClient, ServerApiVersion } = require('mongodb');
-const uri = "mongodb+srv://<username>:<password>@cluster0.eugjqa9.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const uri = `mongodb+srv://${DBuser}:${DBpass}@cluster0.eugjqa9.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -43,12 +40,31 @@ async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
+
+    const craftCollection = client.db("craftDB").collection('craft')
+
+
+    // post a new craft
+    app.post('/craft', async(req, res)=>{
+      const newCraft = req.body;
+      console.log(newCraft);
+      const result = await craftCollection.insertOne(newCraft);
+      res.send(result)
+    })
+
+    // get a craft from database
+    app.get('/craft' , async(req, res)=>{
+      const cursor = craftCollection.find();
+      const result = await cursor.toArray();
+      res.send(result)
+    })
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
     // Ensures that the client will close when you finish/error
-    await client.close();
+    // await client.close();
   }
 }
 run().catch(console.dir);

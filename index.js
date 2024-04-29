@@ -59,20 +59,29 @@ async function run() {
       res.send(result)
     })
 
+    // user created craft find by email
     app.get('/craft/:email', async (req, res) => {
       const email = req.params.email;
-      const query = { userEmail: email};
+      const query = { userEmail: email };
       const result = await craftCollection.find(query).toArray();
       res.send(result)
 
     })
 
-    app.get('/craft/:id', async(req, res)=>{
+    // Delete a craft
+    app.delete('/craft/:id', async(req, res)=>{
       const id = req.params.id;
-      const query= {_id :new ObjectId(id)};
-      const result = await craftCollection.findOne(query, _id);
+      const query = {_id : new ObjectId(id)};
+      const result = await craftCollection.deleteOne(query);
       res.send(result)
     })
+
+    // app.get('/craft/:id', async(req, res)=>{
+    //   const id = req.params.id;
+    //   const query= {_id :new ObjectId(id)};
+    //   const result = await craftCollection.findOne(query, _id);
+    //   res.send(result)
+    // })
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });

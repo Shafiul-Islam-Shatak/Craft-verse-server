@@ -42,6 +42,7 @@ async function run() {
     // await client.connect();
 
     const craftCollection = client.db("craftDB").collection('craft')
+    const reviewCollection = client.db("craftDB").collection('reviews')
 
 
     // post a new craft
@@ -49,6 +50,20 @@ async function run() {
       const newCraft = req.body;
       console.log(newCraft);
       const result = await craftCollection.insertOne(newCraft);
+      res.send(result)
+    })
+    // post a new review
+    app.post('/reviews', async (req, res) => {
+      const newReview = req.body;
+      console.log(newReview);
+      const result = await reviewCollection.insertOne(newReview);
+      res.send(result)
+    })
+
+    // get all review from database
+    app.get('/reviews', async (req, res) => {
+      const cursor = reviewCollection.find();
+      const result = await cursor.toArray();
       res.send(result)
     })
 

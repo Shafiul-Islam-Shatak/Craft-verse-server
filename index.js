@@ -69,19 +69,45 @@ async function run() {
     })
 
     // Delete a craft
-    app.delete('/craft/:id', async(req, res)=>{
+    app.delete('/craft/:id', async (req, res) => {
       const id = req.params.id;
-      const query = {_id : new ObjectId(id)};
+      const query = { _id: new ObjectId(id) };
       const result = await craftCollection.deleteOne(query);
       res.send(result)
     })
 
-    // app.get('/craft/:id', async(req, res)=>{
-    //   const id = req.params.id;
-    //   const query= {_id :new ObjectId(id)};
-    //   const result = await craftCollection.findOne(query, _id);
-    //   res.send(result)
-    // })
+    // update a craft route
+    app.get('/craft-update/:id', async (req, res) => {
+      const id = req.params.id;
+      console.log(id);
+      const query = { _id: new ObjectId(id) };
+      const result = await craftCollection.findOne(query);
+      console.log(query);
+      res.send(result)
+    })
+
+    //put updated data to craft
+    app.put(`/craft-update/:id`, async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const updatedCraft = req.body
+      const newCraft = {
+        $set: {
+          item_name: updatedCraft.item_name,
+          sub_catagory: updatedCraft.sub_catagory,
+          image: updatedCraft.image,
+          price: updatedCraft.price,
+          rating: updatedCraft.rating,
+          time: updatedCraft.time,
+          description: updatedCraft.description,
+          customaization: updatedCraft.customaization,
+          stock: updatedCraft.stock
+        }
+      };
+      const result = await craftCollection.updateOne(query , newCraft, options);
+      res.send(result)
+    })
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });

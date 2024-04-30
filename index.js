@@ -39,7 +39,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
 
     const craftCollection = client.db("craftDB").collection('craft')
 
@@ -52,7 +52,7 @@ async function run() {
       res.send(result)
     })
 
-    // get a craft from database
+    // get all craft from database
     app.get('/craft', async (req, res) => {
       const cursor = craftCollection.find();
       const result = await cursor.toArray();
@@ -86,6 +86,16 @@ async function run() {
       res.send(result)
     })
 
+    //  single craft details route
+    app.get('/craft-details/:id', async (req, res) => {
+      const id = req.params.id;
+      console.log(id);
+      const query = { _id: new ObjectId(id) };
+      const result = await craftCollection.findOne(query);
+      console.log(query);
+      res.send(result)
+    })
+    
     //put updated data to craft
     app.put(`/craft-update/:id`, async (req, res) => {
       const id = req.params.id;

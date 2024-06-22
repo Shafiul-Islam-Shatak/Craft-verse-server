@@ -7,8 +7,18 @@ require('dotenv').config();
 
 
 // midleware
-app.use(cors());
-app.use(express.json());
+// app.use(cors());
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "https://craft-verse.web.app",
+      "https://craft-verse.firebaseapp.com",
+    ]
+  })
+);
+app.use(express.json())
+
 
 app.get('/', (req, res) => {
   res.send('craft server is runnig');
@@ -73,6 +83,43 @@ async function run() {
       const result = await cursor.toArray();
       res.send(result)
     })
+    // get all craft from database
+    app.get('/landscape-cat', async (req, res) => {
+      const query = {sub_catagory:"Landscape Painting"}
+      const cursor = craftCollection.find(query);
+      const result = await cursor.toArray();
+      res.send(result)
+    })
+    app.get('/Portrait-Drawing', async (req, res) => {
+      const query = {sub_catagory:"Portrait Drawing"}
+      const cursor = craftCollection.find(query);
+      const result = await cursor.toArray();
+      res.send(result)
+    })
+    app.get('/Watercolour-Painting', async (req, res) => {
+      const query = {sub_catagory:"Watercolour Painting"}
+      const cursor = craftCollection.find(query);
+      const result = await cursor.toArray();
+      res.send(result)
+    })
+    app.get('/Oil-Painting', async (req, res) => {
+      const query = {sub_catagory:"Oil Painting"}
+      const cursor = craftCollection.find(query);
+      const result = await cursor.toArray();
+      res.send(result)
+    })
+    app.get('/Charcoal-Sketching', async (req, res) => {
+      const query = {sub_catagory:"Charcoal Sketching"}
+      const cursor = craftCollection.find(query);
+      const result = await cursor.toArray();
+      res.send(result)
+    })
+    app.get('/Cartoon-Drawing', async (req, res) => {
+      const query = {sub_catagory:"Cartoon Drawing"}
+      const cursor = craftCollection.find(query);
+      const result = await cursor.toArray();
+      res.send(result)
+    })
 
     // user created craft find by email
     app.get('/craft/:email', async (req, res) => {
@@ -110,7 +157,7 @@ async function run() {
       console.log(query);
       res.send(result)
     })
-    
+
     //put updated data to craft
     app.put(`/craft-update/:id`, async (req, res) => {
       const id = req.params.id;
@@ -130,7 +177,7 @@ async function run() {
           stock: updatedCraft.stock
         }
       };
-      const result = await craftCollection.updateOne(query , newCraft, options);
+      const result = await craftCollection.updateOne(query, newCraft, options);
       res.send(result)
     })
 
